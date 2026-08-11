@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="screen-orientation" content="landscape">
 <title>Value Cabs — Safeguarding Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --o:#f0801e; --b:#0c84b9; --db:#004b76; --g:#2ecc40; }
@@ -12,7 +14,27 @@ html, body {
   width:100%; height:100%;
   overflow:hidden;
   background:#000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family:'Raleway', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── LANDSCAPE PROMPT (portrait mobile only) ── */
+#rotateMsg {
+  display:none;
+  position:fixed; inset:0;
+  z-index:999;
+  background:#000;
+  flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:20px; text-align:center; padding:30px;
+}
+.rotate-icon { font-size:64px; animation:spin 2s ease-in-out infinite alternate; }
+@keyframes spin { from{transform:rotate(-20deg)} to{transform:rotate(20deg)} }
+.rotate-txt  { font-family:'Raleway',sans-serif; font-weight:800; font-size:18px; color:#fff; letter-spacing:1px; }
+.rotate-sub  { font-family:'Raleway',sans-serif; font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; line-height:1.6; max-width:260px; }
+
+/* Show rotate prompt only on portrait phones */
+@media screen and (max-width:600px) and (orientation:portrait) {
+  #rotateMsg { display:flex; }
 }
 
 /* ── FULLSCREEN VIDEO ── */
@@ -27,11 +49,10 @@ html, body {
 #vid::-webkit-media-controls-enclosure  { display:none!important; }
 #vid::-webkit-media-controls-panel      { display:none!important; }
 
-/* ── BLOCKER — prevents tap-to-pause ── */
+/* ── TAP BLOCKER ── */
 #blocker {
   position:fixed; inset:0;
-  z-index:2;
-  background:transparent;
+  z-index:2; background:transparent;
 }
 
 /* ── OVERLAYS ── */
@@ -39,9 +60,9 @@ html, body {
   position:fixed; inset:0;
   z-index:100;
   display:flex; align-items:center; justify-content:center;
-  background:rgba(0,18,40,0.88);
-  backdrop-filter:blur(3px);
-  -webkit-backdrop-filter:blur(3px);
+  background:rgba(0,18,40,0.9);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
   padding:20px;
 }
 .ov.gone { display:none; }
@@ -49,9 +70,9 @@ html, body {
 /* ── CARD ── */
 .card {
   background:var(--db);
-  border:2px solid rgba(255,255,255,0.1);
+  border:2px solid rgba(255,255,255,0.09);
   border-radius:24px;
-  padding:clamp(32px,5vw,52px) clamp(24px,4vw,44px);
+  padding:clamp(30px,5vw,50px) clamp(24px,4vw,44px);
   width:100%; max-width:420px;
   display:flex; flex-direction:column;
   align-items:center; gap:clamp(14px,2.5vw,20px);
@@ -64,29 +85,15 @@ html, body {
   to   { opacity:1; transform:scale(1)   translateY(0); }
 }
 
-/* ── LOGO (opening screen only) ── */
-.vc-logo {
-  display:flex; align-items:center;
-  border:2.5px solid #fff;
-  border-radius:5px; overflow:hidden;
-  height:clamp(40px,7vw,52px);
-}
-.vc-l { background:var(--b); color:#fff; font-weight:900; font-size:clamp(15px,3vw,20px); letter-spacing:2px; padding:0 clamp(12px,2.5vw,18px); height:100%; display:flex; align-items:center; }
-.vc-r { background:var(--o); color:#fff; font-weight:900; font-size:clamp(15px,3vw,20px); letter-spacing:2px; padding:0 clamp(12px,2.5vw,18px); height:100%; display:flex; align-items:center; }
-
-/* ── TEXT ── */
-.ttl {
+/* ── QUESTION TEXT — ALL CAPS, RALEWAY ── */
+.q {
+  font-family:'Raleway',sans-serif;
   font-weight:900;
-  font-size:clamp(19px,3.5vw,26px);
+  font-size:clamp(17px,3vw,24px);
   color:#fff;
-  line-height:1.25;
-}
-.sub {
-  font-size:clamp(13px,2vw,15px);
-  color:rgba(255,255,255,0.52);
-  font-weight:500;
-  line-height:1.65;
-  max-width:290px;
+  line-height:1.3;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
 }
 
 /* ── INPUT ── */
@@ -96,12 +103,12 @@ input.ci {
   border:2.5px solid rgba(255,255,255,0.2);
   border-radius:14px;
   padding:clamp(15px,2.8vw,20px) 18px;
-  font-size:clamp(20px,3.5vw,26px);
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(18px,3vw,24px);
   font-weight:700; color:#fff;
   text-align:center;
   outline:none; -webkit-appearance:none;
   transition:border-color .25s, background .25s;
-  font-family:inherit;
   caret-color:var(--o);
 }
 input.ci:focus {
@@ -110,8 +117,8 @@ input.ci:focus {
 }
 input.ci::placeholder {
   color:rgba(255,255,255,0.22);
-  font-weight:400;
-  font-size:clamp(14px,2.2vw,17px);
+  font-weight:500;
+  font-size:clamp(13px,2vw,16px);
 }
 
 /* ── BUTTON ── */
@@ -120,133 +127,161 @@ button.cb {
   background:var(--o);
   color:#fff; border:none;
   border-radius:50px;
-  padding:clamp(15px,2.8vw,19px) 20px;
-  font-size:clamp(15px,2.5vw,18px);
-  font-weight:800; letter-spacing:1.5px;
+  padding:clamp(15px,2.5vw,18px) 20px;
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(14px,2.2vw,17px);
+  font-weight:800; letter-spacing:2px;
   text-transform:uppercase;
   cursor:pointer;
-  box-shadow:0 6px 24px rgba(240,128,30,0.45);
-  font-family:inherit;
-  touch-action:manipulation;
-  -webkit-appearance:none;
-  transition:transform .15s, box-shadow .15s;
-}
-button.cb:active {
-  transform:scale(0.96);
-  box-shadow:0 3px 12px rgba(240,128,30,0.3);
-}
-
-/* ── ERROR ── */
-.err { font-size:13px; color:#ff9090; font-weight:600; min-height:18px; }
-
-/* ── COMPLETION ── */
-.stamp { border:4px solid var(--g); border-radius:10px; padding:clamp(6px,1.2vw,10px) clamp(24px,4vw,40px); }
-.stamp span { font-weight:900; font-size:clamp(26px,5vw,40px); color:var(--g); letter-spacing:4px; }
-
-.comp-msg {
-  font-size:clamp(13px,2vw,15px);
-  color:rgba(255,255,255,0.6);
-  line-height:1.7; font-weight:500;
-  max-width:300px;
-}
-.quiz-btn {
-  width:100%;
-  background:var(--g);
-  color:#fff; border:none;
-  border-radius:50px;
-  padding:clamp(15px,2.8vw,19px) 20px;
-  font-size:clamp(15px,2.5vw,18px);
-  font-weight:800; letter-spacing:1px;
-  cursor:pointer;
-  box-shadow:0 6px 24px rgba(46,204,64,0.4);
-  font-family:inherit;
+  box-shadow:0 4px 18px rgba(240,128,30,0.35);
   touch-action:manipulation;
   -webkit-appearance:none;
   transition:transform .15s;
 }
-.quiz-btn:active { transform:scale(0.96); }
+button.cb:active { transform:scale(0.96); }
 
-.dso {
-  font-size:11px;
-  color:rgba(255,255,255,0.28);
-  line-height:1.9; font-weight:500;
+/* ── ERROR ── */
+.err {
+  font-family:'Raleway',sans-serif;
+  font-size:13px; color:#ff9090;
+  font-weight:600; min-height:18px;
 }
-.dso strong { color:var(--o); }
 
-/* ── OPENING PLAY SCREEN ── */
+/* ══════════════════════════
+   OPENING SCREEN
+══════════════════════════ */
 #openScreen {
   position:fixed; inset:0;
   z-index:50;
   background:#000;
   display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
 }
 #openScreen.gone { display:none; }
 
-.play-wrap {
+.open-wrap {
   display:flex; flex-direction:column;
-  align-items:center; gap:28px;
-  text-align:center; padding:24px;
+  align-items:center;
+  gap:clamp(18px,3vw,28px);
+  text-align:center;
+  padding:24px;
+  max-width:440px;
 }
-.play-logo {
-  display:flex; align-items:center;
-  border:3px solid #fff;
-  border-radius:6px; overflow:hidden;
-  height:clamp(48px,8vw,64px);
-}
-.play-logo-l { background:var(--b); color:#fff; font-weight:900; font-size:clamp(18px,3.5vw,24px); letter-spacing:2px; padding:0 clamp(14px,2.5vw,22px); height:100%; display:flex; align-items:center; }
-.play-logo-r { background:var(--o); color:#fff; font-weight:900; font-size:clamp(18px,3.5vw,24px); letter-spacing:2px; padding:0 clamp(14px,2.5vw,22px); height:100%; display:flex; align-items:center; }
 
-.play-title {
+.open-title {
+  font-family:'Raleway',sans-serif;
   font-weight:900;
-  font-size:clamp(18px,3.5vw,28px);
-  color:#fff; letter-spacing:1px;
-}
-.play-sub {
-  font-size:clamp(13px,2vw,16px);
-  color:rgba(255,255,255,0.5);
-  font-weight:500; max-width:320px;
-  line-height:1.6;
+  font-size:clamp(22px,4vw,32px);
+  color:#fff;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  line-height:1.2;
 }
 
+.open-sub {
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(13px,2vw,16px);
+  color:rgba(255,255,255,0.45);
+  font-weight:500;
+  line-height:1.65;
+  max-width:300px;
+}
+
+/* Pulsing play circle */
 .play-circle {
   width:clamp(80px,14vw,110px);
   height:clamp(80px,14vw,110px);
   border-radius:50%;
   background:var(--o);
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 0 12px rgba(240,128,30,0.2), 0 0 0 24px rgba(240,128,30,0.08);
-  animation:pulse 2s ease-in-out infinite;
+  box-shadow:0 0 0 14px rgba(240,128,30,0.18), 0 0 0 28px rgba(240,128,30,0.07);
+  animation:pulse 2.2s ease-in-out infinite;
   cursor:pointer;
   transition:transform .15s;
+  flex-shrink:0;
 }
-.play-circle:active { transform:scale(0.94); }
+.play-circle:active { transform:scale(0.93); }
 @keyframes pulse {
-  0%,100% { box-shadow:0 0 0 12px rgba(240,128,30,0.2), 0 0 0 24px rgba(240,128,30,0.08); }
-  50%      { box-shadow:0 0 0 18px rgba(240,128,30,0.15), 0 0 0 36px rgba(240,128,30,0.05); }
+  0%,100% { box-shadow:0 0 0 14px rgba(240,128,30,0.18), 0 0 0 28px rgba(240,128,30,0.07); }
+  50%      { box-shadow:0 0 0 20px rgba(240,128,30,0.12), 0 0 0 40px rgba(240,128,30,0.04); }
 }
-.play-triangle {
+.play-tri {
   width:0; height:0;
   border-top:clamp(14px,2.5vw,20px) solid transparent;
   border-bottom:clamp(14px,2.5vw,20px) solid transparent;
   border-left:clamp(22px,4vw,32px) solid #fff;
-  margin-left:clamp(4px,0.8vw,6px);
+  margin-left:clamp(4px,0.8vw,7px);
 }
 
-.play-hint {
-  font-size:clamp(12px,1.8vw,14px);
-  color:rgba(255,255,255,0.35);
-  font-weight:600; letter-spacing:0.5px;
+.tap-hint {
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(11px,1.8vw,13px);
+  color:rgba(255,255,255,0.3);
+  font-weight:700;
+  letter-spacing:3px;
+  text-transform:uppercase;
 }
 
-@media(max-width:400px){
-  .card { padding:26px 18px; gap:12px; }
+/* ══════════════════════════
+   COMPLETION SCREEN
+══════════════════════════ */
+.stamp {
+  border:4px solid var(--g);
+  border-radius:10px;
+  padding:clamp(6px,1.2vw,10px) clamp(22px,4vw,40px);
 }
+.stamp span {
+  font-family:'Raleway',sans-serif;
+  font-weight:900;
+  font-size:clamp(24px,4.5vw,38px);
+  color:var(--g);
+  letter-spacing:4px;
+}
+
+.comp-well {
+  font-family:'Raleway',sans-serif;
+  font-weight:900;
+  font-size:clamp(20px,3.5vw,28px);
+  color:#fff;
+  letter-spacing:1px;
+}
+
+.comp-msg {
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(13px,2vw,15px);
+  color:rgba(255,255,255,0.55);
+  line-height:1.75; font-weight:500;
+  max-width:300px;
+}
+
+.quiz-btn {
+  width:100%;
+  background:var(--b);
+  color:#fff; border:none;
+  border-radius:50px;
+  padding:clamp(15px,2.5vw,18px) 20px;
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(14px,2.2vw,17px);
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-appearance:none;
+  transition:transform .15s;
+}
+.quiz-btn:active { transform:scale(0.96); }
 </style>
 </head>
 <body>
 
-<!-- VIDEO (loads in background) -->
+<!-- ROTATE PROMPT (portrait phones only) -->
+<div id="rotateMsg">
+  <div class="rotate-icon">📱</div>
+  <div class="rotate-txt">PLEASE ROTATE YOUR PHONE</div>
+  <div class="rotate-sub">Turn your phone to landscape mode for the best training experience.</div>
+</div>
+
+<!-- VIDEO -->
 <video id="vid"
   src="https://raw.githubusercontent.com/Rimshaali97/valuecabs-training/main/training.mp4"
   playsinline
@@ -257,99 +292,86 @@ button.cb:active {
 <!-- BLOCKER -->
 <div id="blocker"></div>
 
-<!-- ══ OPENING SCREEN — tap to play ══ -->
+<!-- ══ OPENING SCREEN ══ -->
 <div id="openScreen">
-  <div class="play-wrap">
-    <div class="play-logo">
-      <div class="play-logo-l">VALUE</div>
-      <div class="play-logo-r">CABS</div>
-    </div>
-    <div class="play-title">Safeguarding Training</div>
-    <div class="play-sub">Mandatory training for all Value Cabs drivers.<br>Tap below to begin.</div>
+  <div class="open-wrap">
+    <div class="open-title">SAFEGUARDING<br>TRAINING</div>
+    <div class="open-sub">Mandatory training for all Value Cabs drivers.</div>
     <div class="play-circle" id="playBtn">
-      <div class="play-triangle"></div>
+      <div class="play-tri"></div>
     </div>
-    <div class="play-hint">TAP TO BEGIN</div>
+    <div class="tap-hint">Tap to begin</div>
   </div>
 </div>
 
-<!-- ══ OV1: Driver Number at 0:10 ══ -->
+<!-- ══ CP1: Driver Number at 0:10 ══ -->
 <div class="ov gone" id="ov1">
   <div class="card">
-    <div class="ttl">What is your<br>Driver Number?</div>
+    <div class="q">Please enter your<br>Driver Number</div>
     <input id="in1" class="ci" type="tel" inputmode="numeric" placeholder="e.g. 214" maxlength="6" autocomplete="off">
     <div class="err" id="e1"></div>
     <button class="cb" id="btn1">Continue Training</button>
   </div>
 </div>
 
-<!-- ══ OV2: Full Name at 3:08 ══ -->
+<!-- ══ CP2: Full Name at 3:08 ══ -->
 <div class="ov gone" id="ov2">
   <div class="card">
-    <div class="ttl">What is your full name?</div>
+    <div class="q">Please enter<br>your full name</div>
     <input id="in2" class="ci" type="text" inputmode="text" autocomplete="name" placeholder="Your full name" maxlength="60">
     <div class="err" id="e2"></div>
     <button class="cb" id="btn2">Continue Training</button>
   </div>
 </div>
 
-<!-- ══ OV3: Car Reg at 4:28 ══ -->
+<!-- ══ CP3: Car Reg at 4:28 ══ -->
 <div class="ov gone" id="ov3">
   <div class="card">
-    <div class="ttl">What is your vehicle<br>registration?</div>
+    <div class="q">Please enter your<br>vehicle registration</div>
     <input id="in3" class="ci" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" placeholder="e.g. ABC 1234" maxlength="10" style="text-transform:uppercase">
     <div class="err" id="e3"></div>
     <button class="cb" id="btn3">Continue Training</button>
   </div>
 </div>
 
-<!-- ══ OV4: Completion ══ -->
+<!-- ══ COMPLETION ══ -->
 <div class="ov gone" id="ov4">
   <div class="card">
-    <div class="vc-logo"><div class="vc-l">VALUE</div><div class="vc-r">CABS</div></div>
-    <div style="font-size:clamp(40px,7vw,56px);line-height:1">🎉</div>
-    <div style="font-weight:900;font-size:clamp(14px,2.5vw,17px);color:#fff;letter-spacing:2px;">TRAINING</div>
+    <div style="font-size:clamp(44px,7vw,60px);line-height:1">🎉</div>
+    <div class="comp-well">YOU DID IT!</div>
     <div class="stamp"><span>COMPLETED</span></div>
     <div class="comp-msg">
-      Well done. You have completed your mandatory safeguarding training.
-      Please proceed to the quiz to complete your certification.
+      Your safeguarding training is now complete.<br><br>
+      Please proceed to the quiz to finish your certification.
     </div>
-    <button class="quiz-btn" onclick="goQuiz()">▶ &nbsp;Proceed to Quiz</button>
-    <div class="dso">
-      DSO: Emma McCausland &nbsp;·&nbsp; <strong>02890 660099</strong><br>
-      South Eastern Trust Safeguarding Programme
-    </div>
+    <button class="quiz-btn" onclick="goQuiz()">PROCEED TO QUIZ</button>
   </div>
 </div>
 
 <script>
 var ZAPIER = 'https://hooks.zapier.com/hooks/catch/24117118/46xiv5r/';
-var QUIZ   = '#'; // ← add quiz URL here later
+var QUIZ   = '#'; // ← paste quiz URL here later
 
-var CP1 = 10;   // 0:10 — Driver Number
-var CP2 = 188;  // 3:08 — Full Name
-var CP3 = 268;  // 4:28 — Car Reg
+var CP1 = 10;   // 0:10
+var CP2 = 188;  // 3:08
+var CP3 = 268;  // 4:28
 
 var dNum='', dName='', dReg='';
 var cp1done=false, cp2done=false, cp3done=false, finished=false;
-
 var vid = document.getElementById('vid');
 
-/* ══ Opening play button ══ */
-document.getElementById('playBtn').addEventListener('click', beginTraining);
-document.getElementById('openScreen').addEventListener('click', beginTraining);
+/* ══ Opening play ══ */
+document.getElementById('playBtn').addEventListener('click', begin);
+document.getElementById('openScreen').addEventListener('click', begin);
 
-function beginTraining(){
+function begin(){
   document.getElementById('openScreen').classList.add('gone');
   vid.muted = false;
   var p = vid.play();
   if(p !== undefined){
     p.catch(function(){
-      // Browser blocked unmuted — play muted first then unmute
       vid.muted = true;
-      vid.play().then(function(){
-        vid.muted = false;
-      }).catch(function(){});
+      vid.play().then(function(){ vid.muted = false; }).catch(function(){});
     });
   }
 }
@@ -357,86 +379,54 @@ function beginTraining(){
 /* ══ Time watcher ══ */
 vid.addEventListener('timeupdate', function(){
   var t = vid.currentTime;
-
-  if(t >= CP1 && !cp1done){
-    cp1done = true;
-    vid.pause();
-    show('ov1');
-    later('in1');
-  }
-  if(t >= CP2 && !cp2done && cp1done){
-    cp2done = true;
-    vid.pause();
-    show('ov2');
-    later('in2');
-  }
-  if(t >= CP3 && !cp3done && cp2done){
-    cp3done = true;
-    vid.pause();
-    show('ov3');
-    later('in3');
-  }
+  if(t >= CP1 && !cp1done){ cp1done=true; vid.pause(); show('ov1'); focusLater('in1'); }
+  if(t >= CP2 && !cp2done && cp1done){ cp2done=true; vid.pause(); show('ov2'); focusLater('in2'); }
+  if(t >= CP3 && !cp3done && cp2done){ cp3done=true; vid.pause(); show('ov3'); focusLater('in3'); }
 });
 
 vid.addEventListener('ended', function(){
   if(!finished){ finished=true; complete(); }
 });
 
-/* ══ CP1: Driver Number ══ */
+/* ══ CP1 ══ */
 document.getElementById('btn1').addEventListener('click', doCP1);
 document.getElementById('in1').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP1(); });
 function doCP1(){
   var v = document.getElementById('in1').value.trim();
-  if(!v){ document.getElementById('e1').textContent = 'Please enter your Driver Number.'; return; }
-  dNum = v;
-  document.getElementById('e1').textContent = '';
-  hide('ov1');
-  vid.play();
+  if(!v){ document.getElementById('e1').textContent='Please enter your Driver Number.'; return; }
+  dNum=v; document.getElementById('e1').textContent=''; hide('ov1'); vid.play();
 }
 
-/* ══ CP2: Full Name ══ */
+/* ══ CP2 ══ */
 document.getElementById('btn2').addEventListener('click', doCP2);
 document.getElementById('in2').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP2(); });
 function doCP2(){
   var v = document.getElementById('in2').value.trim();
-  if(!v || v.length < 2){ document.getElementById('e2').textContent = 'Please enter your full name.'; return; }
-  dName = v;
-  document.getElementById('e2').textContent = '';
-  hide('ov2');
-  vid.play();
+  if(!v||v.length<2){ document.getElementById('e2').textContent='Please enter your full name.'; return; }
+  dName=v; document.getElementById('e2').textContent=''; hide('ov2'); vid.play();
 }
 
-/* ══ CP3: Car Reg ══ */
+/* ══ CP3 ══ */
 document.getElementById('btn3').addEventListener('click', doCP3);
 document.getElementById('in3').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP3(); });
 function doCP3(){
   var v = document.getElementById('in3').value.trim().toUpperCase();
-  if(!v || v.length < 2){ document.getElementById('e3').textContent = 'Please enter your vehicle registration.'; return; }
-  dReg = v;
-  document.getElementById('e3').textContent = '';
-  hide('ov3');
-  vid.play();
+  if(!v||v.length<2){ document.getElementById('e3').textContent='Please enter your vehicle registration.'; return; }
+  dReg=v; document.getElementById('e3').textContent=''; hide('ov3'); vid.play();
 }
 
-/* ══ Completion ══ */
+/* ══ Complete ══ */
 function complete(){
   show('ov4');
-  zapier();
-}
-
-function zapier(){
-  var now = new Date();
-  var ts  = now.toLocaleString('en-GB',{
-    day:'2-digit', month:'short', year:'numeric',
-    hour:'2-digit', minute:'2-digit'
-  });
-  fetch(ZAPIER, {
+  var now=new Date();
+  var ts=now.toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  fetch(ZAPIER,{
     method:'POST', mode:'no-cors',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({
-      driver_number: dNum  || 'not collected',
-      driver_name:   dName || 'not collected',
-      car_reg:       dReg  || 'not collected',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      driver_number: dNum||'not collected',
+      driver_name:   dName||'not collected',
+      car_reg:       dReg||'not collected',
       timestamp:     ts,
       completed:     'YES',
       time_taken:    Math.floor(vid.duration/60)+'m '+Math.floor(vid.duration%60)+'s'
@@ -445,28 +435,27 @@ function zapier(){
 }
 
 function goQuiz(){
-  if(QUIZ && QUIZ !== '#'){
-    window.location.href = QUIZ;
-  } else {
-    alert('The quiz will be available soon. Please contact Emma McCausland on 02890 660099 if you need assistance.');
-  }
+  if(QUIZ&&QUIZ!=='#'){ window.location.href=QUIZ; }
+  else { alert('The quiz link will be available soon. Please contact your manager if you need assistance.'); }
 }
 
-/* ══ Helpers ══ */
 function show(id){ document.getElementById(id).classList.remove('gone'); }
 function hide(id){ document.getElementById(id).classList.add('gone'); }
-function later(id){ setTimeout(function(){ var el=document.getElementById(id); if(el) el.focus(); }, 400); }
+function focusLater(id){ setTimeout(function(){ var el=document.getElementById(id); if(el) el.focus(); },400); }
 
-/* Blocker — stop pause/seek taps on video */
-var bl = document.getElementById('blocker');
-bl.addEventListener('click',    function(e){ e.preventDefault(); e.stopPropagation(); }, true);
-bl.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+/* Blocker */
+var bl=document.getElementById('blocker');
+bl.addEventListener('click',    function(e){ e.preventDefault(); e.stopPropagation(); },true);
+bl.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); },true);
 
 /* Block back button */
-window.history.pushState(null, '', window.location.href);
-window.addEventListener('popstate', function(){
-  window.history.pushState(null, '', window.location.href);
-});
+window.history.pushState(null,'',window.location.href);
+window.addEventListener('popstate',function(){ window.history.pushState(null,'',window.location.href); });
+
+/* Request landscape on mobile */
+if(screen.orientation && screen.orientation.lock){
+  screen.orientation.lock('landscape').catch(function(){});
+}
 </script>
 </body>
 </html>
