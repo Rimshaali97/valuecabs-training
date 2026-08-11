@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>Value Cabs Safeguarding Training</title>
+
+<style>
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
+}
+
+#videoContainer{
+    position:fixed;
+    inset:0;
+    background:#000;
+}
+
+#trainingVideo{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#000;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.hidden{
+    display:none !important;
+}
+
+.card{
+    width:90%;
+    max-width:420px;
+    background:#fff;
+    color:#222;
+    padding:28px;
+    border-radius:16px;
+    text-align:center;
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.card p{
+    margin-bottom:18px;
+}
+
+.card input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+    box-sizing:border-box;
+    margin-bottom:15px;
+}
+
+.card button{
+    width:100%;
+    padding:14px;
+    border:none;
+    background:#f0801e;
+    color:#fff;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.completion{
+    position:fixed;
+    inset:0;
+    background:#004b76;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:10000;
+}
+
+.completion-content{
+    width:90%;
+    max-width:650px;
+    background:white;
+    color:#222;
+    padding:35px;
+    border-radius:16px;
+    text-align:center;
+}
+
+.stamp{
+    display:inline-block;
+    border:4px solid #16a34a;
+    color:#16a34a;
+    padding:12px 24px;
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.info{
+    text-align:left;
+    margin-top:25px;
+}
+
+.info p{
+    margin:10px 0;
+}
+
+.future-btn{
+    margin-top:25px;
+    background:#0c84b9;
+    color:white;
+    text-decoration:none;
+    padding:14px 24px;
+    border-radius:8px;
+    display:inline-block;
+}
+
+</style>
+</head>
+<body>
+
+<div id="videoContainer">
+
+<video
+id="trainingVideo"
+playsinline
+controls
+preload="auto"
+controlslist="nodownload"
+disablepictureinpicture
+>
+4" type="video/mp4">
+Your browser does not support HTML5 video.
+</video>
+
+</div>
+
+<!-- DRIVER NUMBER -->
+
+<div id="driverModal" class="modal hidden">
+
+<div class="card">
+
+<h2>Start Training</h2>
+
+<p>Please enter your Driver Number</p>
+
+<input
+id="driverNumber"
+type="text"
+placeholder="e.g. VC-214">
+
+<button id="driverBtn">
+Continue Training
+</button>
+
+</div>
+
+</div>
+
+<!-- FULL NAME -->
+
+<div id="nameModal" class="modal hidden">
+
+<div class="card">
+
+<h2>Quick Check</h2>
+
+<p>Please enter your Full Name</p>
+
+<input
+id="fullName"
+type="text"
+placeholder="Your Full Name">
+
+<button id="nameBtn">
+Continue Training
+</button>
+
+</div>
+
+</div>
+
+<!-- VEHICLE REG -->
+
+<div id="regModal" class="modal hidden">
+
+<div class="card">
+
+<h2>Almost Finished</h2>
+
+<p>Please enter your Vehicle Registration</p>
+
+<input
+id="carReg"
+type="text"
+placeholder="e.g. ABC123">
+
+<button id="regBtn">
+Continue Training
+</button>
+
+</div>
+
+</div>
+
+<!-- COMPLETION -->
+
+<div id="completionScreen" class="completion">
+
+<div class="completion-content">
+
+<div class="stamp">
+TRAINING COMPLETED
+</div>
+
+<h2>Training Complete</h2>
+
+<p>Your completion has been recorded.</p>
+
+<div class="info">
+
+<p><strong>Driver Number:</strong> <span id="showDriver"></span></p>
+
+<p><strong>Full Name:</strong> <span id="showName"></span></p>
+
+<p><strong>Vehicle Registration:</strong> <span id="showReg"></span></p>
+
+</div>
+
+#
+▶ Proceed To Quiz
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const video = document.getElementById("trainingVideo");
+
+const driverModal = document.getElementById("driverModal");
+const nameModal = document.getElementById("nameModal");
+const regModal = document.getElementById("regModal");
+
+let driverNumber = "";
+let fullName = "";
+let carReg = "";
+
+let checkpoint1 = false;
+let checkpoint2 = false;
+let checkpoint3 = false;
+let submitted = false;
+
+/* Timings */
+
+const DRIVER_TIME = 8;
+const NAME_TIME = 135;
+const REG_TIME = 270;
+
+video.addEventListener("timeupdate", () => {
+
+    const t = Math.floor(video.currentTime);
+
+    if(t >= DRIVER_TIME && !checkpoint1){
+
+        checkpoint1 = true;
+
+        video.pause();
+
+        driverModal.classList.remove("hidden");
+    }
+
+    if(t >= NAME_TIME && !checkpoint2){
+
+        checkpoint2 = true;
+
+        video.pause();
+
+        nameModal.classList.remove("hidden");
+    }
+
+    if(t >= REG_TIME && !checkpoint3){
+
+        checkpoint3 = true;
+
+        video.pause();
+
+        regModal.classList.remove("hidden");
+    }
+
+});
+
+document.getElementById("driverBtn").onclick = () => {
+
+    const value =
+    document.getElementById("driverNumber").value.trim();
+
+    if(value.length < 2){
+        alert("Please enter your Driver Number.");
+        return;
+    }
+
+    driverNumber = value;
+
+    driverModal.classList.add("hidden");
+
+    video.play();
+};
+
+document.getElementById("nameBtn").onclick = () => {
+
+    const value =
+    document.getElementById("fullName").value.trim();
+
+    if(value.length < 3){
+        alert("Please enter your Full Name.");
+        return;
+    }
+
+    fullName = value;
+
+    nameModal.classList.add("hidden");
+
+    video.play();
+};
+
+document.getElementById("regBtn").onclick = () => {
+
+    const value =
+    document.getElementById("carReg").value.trim();
+
+    if(value.length < 2){
+        alert("Please enter your Registration.");
+        return;
+    }
+
+    carReg = value;
+
+    regModal.classList.add("hidden");
+
+    video.play();
+};
+
+video.addEventListener("ended", () => {
+
+    if(submitted) return;
+
+    submitted = true;
+
+    document.getElementById("showDriver").textContent = driverNumber;
+    document.getElementById("showName").textContent = fullName;
+    document.getElementById("showReg").textContent = carReg;
+
+    document.getElementById("completionScreen").style.display = "flex";
+
+    fetch("https://hooks.zapier.com/hooks/catch/24117118/46xiv5r/",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            driver_number:driverNumber,
+            full_name:fullName,
+            car_reg:carReg,
+            completed:"YES",
+            timestamp:new Date().toISOString(),
+            time_taken_seconds:338
+        })
+    });
+
+});
+
+</script>
+
+</body>
+</html>
