@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="screen-orientation" content="landscape">
 <title>Value Cabs — Safeguarding Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +16,7 @@ html, body {
   font-family:'Raleway', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ── LANDSCAPE PROMPT (portrait mobile only) ── */
+/* ── ROTATE PROMPT (portrait phones only) ── */
 #rotateMsg {
   display:none;
   position:fixed; inset:0;
@@ -29,10 +28,9 @@ html, body {
 }
 .rotate-icon { font-size:64px; animation:spin 2s ease-in-out infinite alternate; }
 @keyframes spin { from{transform:rotate(-20deg)} to{transform:rotate(20deg)} }
-.rotate-txt  { font-family:'Raleway',sans-serif; font-weight:800; font-size:18px; color:#fff; letter-spacing:1px; }
-.rotate-sub  { font-family:'Raleway',sans-serif; font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; line-height:1.6; max-width:260px; }
+.rotate-txt { font-family:'Raleway',sans-serif; font-weight:800; font-size:18px; color:#fff; letter-spacing:1px; }
+.rotate-sub { font-family:'Raleway',sans-serif; font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; line-height:1.6; max-width:260px; }
 
-/* Show rotate prompt only on portrait phones */
 @media screen and (max-width:600px) and (orientation:portrait) {
   #rotateMsg { display:flex; }
 }
@@ -85,7 +83,7 @@ html, body {
   to   { opacity:1; transform:scale(1)   translateY(0); }
 }
 
-/* ── QUESTION TEXT — ALL CAPS, RALEWAY ── */
+/* ── QUESTION TEXT ── */
 .q {
   font-family:'Raleway',sans-serif;
   font-weight:900;
@@ -147,9 +145,7 @@ button.cb:active { transform:scale(0.96); }
   font-weight:600; min-height:18px;
 }
 
-/* ══════════════════════════
-   OPENING SCREEN
-══════════════════════════ */
+/* ══ OPENING SCREEN ══ */
 #openScreen {
   position:fixed; inset:0;
   z-index:50;
@@ -186,7 +182,6 @@ button.cb:active { transform:scale(0.96); }
   max-width:300px;
 }
 
-/* Pulsing play circle */
 .play-circle {
   width:clamp(80px,14vw,110px);
   height:clamp(80px,14vw,110px);
@@ -221,9 +216,7 @@ button.cb:active { transform:scale(0.96); }
   text-transform:uppercase;
 }
 
-/* ══════════════════════════
-   COMPLETION SCREEN
-══════════════════════════ */
+/* ══ COMPLETION ══ */
 .stamp {
   border:4px solid var(--g);
   border-radius:10px;
@@ -236,7 +229,6 @@ button.cb:active { transform:scale(0.96); }
   color:var(--g);
   letter-spacing:4px;
 }
-
 .comp-well {
   font-family:'Raleway',sans-serif;
   font-weight:900;
@@ -244,7 +236,6 @@ button.cb:active { transform:scale(0.96); }
   color:#fff;
   letter-spacing:1px;
 }
-
 .comp-msg {
   font-family:'Raleway',sans-serif;
   font-size:clamp(13px,2vw,15px);
@@ -252,7 +243,6 @@ button.cb:active { transform:scale(0.96); }
   line-height:1.75; font-weight:500;
   max-width:300px;
 }
-
 .quiz-btn {
   width:100%;
   background:var(--b);
@@ -274,7 +264,7 @@ button.cb:active { transform:scale(0.96); }
 </head>
 <body>
 
-<!-- ROTATE PROMPT (portrait phones only) -->
+<!-- ROTATE PROMPT -->
 <div id="rotateMsg">
   <div class="rotate-icon">📱</div>
   <div class="rotate-txt">PLEASE ROTATE YOUR PHONE</div>
@@ -314,7 +304,7 @@ button.cb:active { transform:scale(0.96); }
   </div>
 </div>
 
-<!-- ══ CP2: Full Name at 3:08 ══ -->
+<!-- ══ CP2: Full Name at 3:36 ══ -->
 <div class="ov gone" id="ov2">
   <div class="card">
     <div class="q">Please enter<br>your full name</div>
@@ -324,7 +314,7 @@ button.cb:active { transform:scale(0.96); }
   </div>
 </div>
 
-<!-- ══ CP3: Car Reg at 4:28 ══ -->
+<!-- ══ CP3: Vehicle Reg at 6:07 ══ -->
 <div class="ov gone" id="ov3">
   <div class="card">
     <div class="q">Please enter your<br>vehicle registration</div>
@@ -352,9 +342,11 @@ button.cb:active { transform:scale(0.96); }
 var ZAPIER = 'https://hooks.zapier.com/hooks/catch/24117118/46xiv5r/';
 var QUIZ   = '#'; // ← paste quiz URL here later
 
-var CP1 = 10;   // 0:10
-var CP2 = 188;  // 3:08
-var CP3 = 268;  // 4:28
+// ── CHECKPOINT TIMES (seconds) ──
+var CP1 = 10;   // 0:10  — Driver Number
+var CP2 = 216;  // 3:36  — Full Name
+var CP3 = 367;  // 6:07  — Vehicle Reg
+// Video total = 6:30 (390s) — completion fires on 'ended' event
 
 var dNum='', dName='', dReg='';
 var cp1done=false, cp2done=false, cp3done=false, finished=false;
@@ -388,7 +380,7 @@ vid.addEventListener('ended', function(){
   if(!finished){ finished=true; complete(); }
 });
 
-/* ══ CP1 ══ */
+/* ══ CP1: Driver Number ══ */
 document.getElementById('btn1').addEventListener('click', doCP1);
 document.getElementById('in1').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP1(); });
 function doCP1(){
@@ -397,7 +389,7 @@ function doCP1(){
   dNum=v; document.getElementById('e1').textContent=''; hide('ov1'); vid.play();
 }
 
-/* ══ CP2 ══ */
+/* ══ CP2: Full Name ══ */
 document.getElementById('btn2').addEventListener('click', doCP2);
 document.getElementById('in2').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP2(); });
 function doCP2(){
@@ -406,7 +398,7 @@ function doCP2(){
   dName=v; document.getElementById('e2').textContent=''; hide('ov2'); vid.play();
 }
 
-/* ══ CP3 ══ */
+/* ══ CP3: Vehicle Reg ══ */
 document.getElementById('btn3').addEventListener('click', doCP3);
 document.getElementById('in3').addEventListener('keydown', function(e){ if(e.key==='Enter') doCP3(); });
 function doCP3(){
@@ -415,7 +407,7 @@ function doCP3(){
   dReg=v; document.getElementById('e3').textContent=''; hide('ov3'); vid.play();
 }
 
-/* ══ Complete ══ */
+/* ══ Completion ══ */
 function complete(){
   show('ov4');
   var now=new Date();
@@ -424,19 +416,19 @@ function complete(){
     method:'POST', mode:'no-cors',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      driver_number: dNum||'not collected',
-      driver_name:   dName||'not collected',
-      car_reg:       dReg||'not collected',
+      driver_number: dNum  || 'not collected',
+      driver_name:   dName || 'not collected',
+      car_reg:       dReg  || 'not collected',
       timestamp:     ts,
       completed:     'YES',
-      time_taken:    Math.floor(vid.duration/60)+'m '+Math.floor(vid.duration%60)+'s'
+      video_length:  '6m 30s'
     })
   }).catch(function(){});
 }
 
 function goQuiz(){
   if(QUIZ&&QUIZ!=='#'){ window.location.href=QUIZ; }
-  else { alert('The quiz link will be available soon. Please contact your manager if you need assistance.'); }
+  else{ alert('The quiz link will be available soon. Please contact your manager if you need assistance.'); }
 }
 
 function show(id){ document.getElementById(id).classList.remove('gone'); }
@@ -452,7 +444,7 @@ bl.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagati
 window.history.pushState(null,'',window.location.href);
 window.addEventListener('popstate',function(){ window.history.pushState(null,'',window.location.href); });
 
-/* Request landscape on mobile */
+/* Request landscape on Android */
 if(screen.orientation && screen.orientation.lock){
   screen.orientation.lock('landscape').catch(function(){});
 }
