@@ -499,8 +499,14 @@ function complete(){
   }).catch(function(){});
 }
 function goQuiz(){
-  if(QUIZ&&QUIZ!=='#'){window.location.href=QUIZ;}
-  else{alert('The quiz link will be available soon. Please contact your manager.');}
+  // Save driver info so quiz can pick it up
+  try {
+    sessionStorage.setItem('vc_driver_num',  dNum  || '');
+    sessionStorage.setItem('vc_driver_name', dName || '');
+    sessionStorage.setItem('vc_car_reg',     dReg  || '');
+  } catch(e){}
+  // Go to quiz — same folder on GitHub
+  window.location.href = 'quiz.html';
 }
 function show(id){document.getElementById(id).classList.remove('gone');}
 function hide(id){document.getElementById(id).classList.add('gone');}
