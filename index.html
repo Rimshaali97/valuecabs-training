@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Value Cabs — Safeguarding Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,182 +12,221 @@
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --o:#f0801e; --b:#0c84b9; --db:#004b76; --g:#2ecc40; }
 
-html, body {
-  width:100%; height:100%;
-  overflow:hidden;
-  background:#000;
-  font-family:'Raleway', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* Prevent pull-to-refresh and address bar showing on scroll */
-  overscroll-behavior:none;
-  -webkit-overflow-scrolling:none;
-  touch-action:none;
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
+html {
+  /* dvh = dynamic viewport height — shrinks to exclude browser UI */
+  height: 100dvh;
+  height: -webkit-fill-available;
 }
 
-/* ── ROTATE PROMPT ── */
-#rotateMsg {
-  display:none;
-  position:fixed; inset:0;
-  z-index:999;
-  background:#000;
-  flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:20px; text-align:center; padding:30px;
+body {
+  width: 100%;
+  /* Stack fallbacks: dvh works on modern browsers, fill-available on older iOS */
+  height: 100dvh;
+  height: -webkit-fill-available;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Raleway', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overscroll-behavior: none;
+  touch-action: none;
 }
-.rotate-icon { font-size:64px; animation:spin 2s ease-in-out infinite alternate; }
+
+/* ── ROTATE PROMPT (portrait only) ── */
+#rotateMsg {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 999;
+  background: #000;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; text-align: center; padding: 30px;
+}
+.ri { font-size: 60px; animation: spin 2s ease-in-out infinite alternate; }
 @keyframes spin { from{transform:rotate(-20deg)} to{transform:rotate(20deg)} }
-.rotate-txt { font-family:'Raleway',sans-serif; font-weight:800; font-size:18px; color:#fff; letter-spacing:1px; }
-.rotate-sub { font-family:'Raleway',sans-serif; font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; line-height:1.6; max-width:260px; }
+.rt { font-family:'Raleway',sans-serif; font-weight:800; font-size:18px; color:#fff; letter-spacing:1px; text-transform:uppercase; }
+.rs { font-family:'Raleway',sans-serif; font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; line-height:1.6; max-width:260px; }
 
 @media screen and (max-width:768px) and (orientation:portrait) {
   #rotateMsg { display:flex; }
 }
 
-/* ── FULLSCREEN VIDEO ── */
+/* ── VIDEO — uses dvh so it never goes under address bar ── */
 #vid {
-  position:fixed; top:0; left:0;
-  width:100%; height:100%;
-  object-fit:contain;
-  background:#000;
-  z-index:1;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  /* dvh excludes the browser address bar from the height calculation */
+  height: 100dvh;
+  height: -webkit-fill-available;
+  object-fit: contain;
+  background: #000;
+  z-index: 1;
+  /* Kill ALL native controls */
+  pointer-events: none;
 }
 #vid::-webkit-media-controls            { display:none!important; }
 #vid::-webkit-media-controls-enclosure  { display:none!important; }
 #vid::-webkit-media-controls-panel      { display:none!important; }
+#vid::-webkit-media-controls-play-button      { display:none!important; }
+#vid::-webkit-media-controls-timeline         { display:none!important; }
+#vid::-webkit-media-controls-current-time-display { display:none!important; }
+#vid::-webkit-media-controls-time-remaining-display { display:none!important; }
+#vid::-webkit-media-controls-mute-button      { display:none!important; }
+#vid::-webkit-media-controls-volume-slider    { display:none!important; }
+#vid::-webkit-media-controls-fullscreen-button { display:none!important; }
 
-/* ── TAP BLOCKER ── */
+/* ── BLOCKER — sits over video, catches all taps ── */
 #blocker {
-  position:fixed; inset:0;
-  z-index:2; background:transparent;
-  touch-action:none;
+  position: fixed; inset: 0;
+  z-index: 2;
+  background: transparent;
+  touch-action: none;
 }
 
 /* ── OVERLAYS ── */
 .ov {
-  position:fixed; inset:0;
-  z-index:100;
-  display:flex; align-items:center; justify-content:center;
-  background:rgba(0,18,40,0.9);
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-  padding:20px;
-  touch-action:none;
+  position: fixed; inset: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,18,40,0.9);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 20px;
+  touch-action: none;
+  /* Also use dvh so overlay covers full visible area including under address bar */
+  height: 100dvh;
+  height: -webkit-fill-available;
 }
-.ov.gone { display:none; }
+.ov.gone { display: none; }
 
 /* ── CARD ── */
 .card {
-  background:var(--db);
-  border:2px solid rgba(255,255,255,0.09);
-  border-radius:24px;
-  padding:clamp(28px,4vw,48px) clamp(22px,3.5vw,42px);
-  width:100%; max-width:400px;
-  display:flex; flex-direction:column;
-  align-items:center; gap:clamp(13px,2.2vw,18px);
-  text-align:center;
-  box-shadow:0 32px 80px rgba(0,0,0,0.8);
-  animation:cardIn .35s cubic-bezier(.34,1.3,.64,1);
+  background: var(--db);
+  border: 2px solid rgba(255,255,255,0.09);
+  border-radius: 24px;
+  padding: clamp(28px,4vw,48px) clamp(22px,3.5vw,42px);
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: clamp(13px,2.2vw,18px);
+  text-align: center;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.8);
+  animation: cardIn .35s cubic-bezier(.34,1.3,.64,1);
+  /* Make sure card doesn't overflow on small screens */
+  max-height: 90dvh;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 @keyframes cardIn {
   from { opacity:0; transform:scale(.88) translateY(16px); }
-  to   { opacity:1; transform:scale(1) translateY(0); }
+  to   { opacity:1; transform:scale(1)   translateY(0); }
 }
 
 .q {
-  font-family:'Raleway',sans-serif;
-  font-weight:900;
-  font-size:clamp(16px,2.8vw,22px);
-  color:#fff; line-height:1.3;
-  letter-spacing:0.5px;
-  text-transform:uppercase;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 900;
+  font-size: clamp(16px,2.8vw,22px);
+  color: #fff; line-height: 1.3;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 input.ci {
-  width:100%;
-  background:rgba(255,255,255,0.08);
-  border:2.5px solid rgba(255,255,255,0.2);
-  border-radius:14px;
-  padding:clamp(14px,2.5vw,18px) 16px;
-  font-family:'Raleway',sans-serif;
-  font-size:clamp(18px,3vw,24px);
-  font-weight:700; color:#fff;
-  text-align:center;
-  outline:none; -webkit-appearance:none;
-  transition:border-color .25s, background .25s;
-  caret-color:var(--o);
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 2.5px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  padding: clamp(14px,2.5vw,18px) 16px;
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(18px,3vw,24px);
+  font-weight: 700; color: #fff;
+  text-align: center;
+  outline: none; -webkit-appearance: none;
+  transition: border-color .25s, background .25s;
+  caret-color: var(--o);
+  /* Prevent zoom on iOS when font-size < 16px */
+  font-size: max(18px, 1em);
 }
-input.ci:focus { border-color:var(--o); background:rgba(255,255,255,0.13); }
-input.ci::placeholder { color:rgba(255,255,255,0.22); font-weight:500; font-size:clamp(13px,2vw,16px); }
+input.ci:focus { border-color: var(--o); background: rgba(255,255,255,0.13); }
+input.ci::placeholder { color:rgba(255,255,255,0.22); font-weight:500; }
 
 button.cb {
-  width:100%;
-  background:var(--o); color:#fff; border:none;
-  border-radius:50px;
-  padding:clamp(14px,2.3vw,17px) 20px;
-  font-family:'Raleway',sans-serif;
-  font-size:clamp(13px,2vw,16px);
-  font-weight:800; letter-spacing:2px;
-  text-transform:uppercase; cursor:pointer;
-  box-shadow:0 4px 18px rgba(240,128,30,0.35);
-  touch-action:manipulation; -webkit-appearance:none;
-  transition:transform .15s;
+  width: 100%;
+  background: var(--o); color: #fff; border: none;
+  border-radius: 50px;
+  padding: clamp(14px,2.3vw,17px) 20px;
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(13px,2vw,16px);
+  font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer;
+  touch-action: manipulation; -webkit-appearance: none;
+  transition: transform .15s;
+  /* Minimum tap target size for accessibility */
+  min-height: 48px;
 }
-button.cb:active { transform:scale(0.96); }
+button.cb:active { transform: scale(0.96); }
 
-.err { font-family:'Raleway',sans-serif; font-size:13px; color:#ff9090; font-weight:600; min-height:18px; }
+.err {
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px; color: #ff9090;
+  font-weight: 600; min-height: 18px;
+}
 
 /* ══ OPENING SCREEN ══ */
 #openScreen {
-  position:fixed; inset:0;
-  z-index:50; background:#000;
-  display:flex; align-items:center; justify-content:center;
+  position: fixed; inset: 0;
+  z-index: 50; background: #000;
+  display: flex; align-items: center; justify-content: center;
+  height: 100dvh;
+  height: -webkit-fill-available;
 }
-#openScreen.gone { display:none; }
+#openScreen.gone { display: none; }
 
 .open-wrap {
-  display:flex; flex-direction:column;
-  align-items:center;
-  gap:clamp(16px,2.8vw,26px);
-  text-align:center; padding:24px;
-  max-width:440px;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: clamp(16px,2.8vw,26px);
+  text-align: center; padding: 24px;
+  max-width: 440px;
 }
 .open-title {
-  font-family:'Raleway',sans-serif; font-weight:900;
-  font-size:clamp(22px,4vw,32px); color:#fff;
-  letter-spacing:2px; text-transform:uppercase; line-height:1.2;
+  font-family: 'Raleway', sans-serif; font-weight: 900;
+  font-size: clamp(22px,4vw,32px); color: #fff;
+  letter-spacing: 2px; text-transform: uppercase; line-height: 1.2;
 }
 .open-sub {
-  font-family:'Raleway',sans-serif;
-  font-size:clamp(13px,2vw,16px);
-  color:rgba(255,255,255,0.45); font-weight:500;
-  line-height:1.65; max-width:300px;
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(13px,2vw,16px);
+  color: rgba(255,255,255,0.45); font-weight: 500;
+  line-height: 1.65; max-width: 300px;
 }
 .play-circle {
-  width:clamp(80px,14vw,110px); height:clamp(80px,14vw,110px);
-  border-radius:50%; background:var(--o);
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 0 14px rgba(240,128,30,0.18), 0 0 0 28px rgba(240,128,30,0.07);
-  animation:pulse 2.2s ease-in-out infinite;
-  cursor:pointer; flex-shrink:0;
-  transition:transform .15s;
+  width: clamp(80px,14vw,110px); height: clamp(80px,14vw,110px);
+  border-radius: 50%; background: var(--o);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 14px rgba(240,128,30,0.18), 0 0 0 28px rgba(240,128,30,0.07);
+  animation: pulse 2.2s ease-in-out infinite;
+  cursor: pointer; flex-shrink: 0;
+  transition: transform .15s;
+  min-width: 80px; min-height: 80px;
 }
-.play-circle:active { transform:scale(0.93); }
+.play-circle:active { transform: scale(0.93); }
 @keyframes pulse {
-  0%,100% { box-shadow:0 0 0 14px rgba(240,128,30,0.18), 0 0 0 28px rgba(240,128,30,0.07); }
-  50%      { box-shadow:0 0 0 20px rgba(240,128,30,0.12), 0 0 0 40px rgba(240,128,30,0.04); }
+  0%,100% { box-shadow:0 0 0 14px rgba(240,128,30,0.18),0 0 0 28px rgba(240,128,30,0.07); }
+  50%      { box-shadow:0 0 0 20px rgba(240,128,30,0.12),0 0 0 40px rgba(240,128,30,0.04); }
 }
 .play-tri {
-  width:0; height:0;
-  border-top:clamp(14px,2.5vw,20px) solid transparent;
-  border-bottom:clamp(14px,2.5vw,20px) solid transparent;
-  border-left:clamp(22px,4vw,32px) solid #fff;
-  margin-left:clamp(4px,0.8vw,7px);
+  width: 0; height: 0;
+  border-top: clamp(14px,2.5vw,20px) solid transparent;
+  border-bottom: clamp(14px,2.5vw,20px) solid transparent;
+  border-left: clamp(22px,4vw,32px) solid #fff;
+  margin-left: clamp(4px,0.8vw,7px);
 }
 .tap-hint {
-  font-family:'Raleway',sans-serif; font-size:clamp(11px,1.8vw,13px);
-  color:rgba(255,255,255,0.3); font-weight:700;
-  letter-spacing:3px; text-transform:uppercase;
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(11px,1.8vw,13px);
+  color: rgba(255,255,255,0.3); font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
 }
 
 /* ══ COMPLETION ══ */
@@ -201,46 +240,29 @@ button.cb:active { transform:scale(0.96); }
   font-family:'Raleway',sans-serif; font-size:clamp(13px,2vw,16px);
   font-weight:800; letter-spacing:2px; text-transform:uppercase;
   cursor:pointer; touch-action:manipulation; -webkit-appearance:none;
-  transition:transform .15s;
+  transition:transform .15s; min-height:48px;
 }
 .quiz-btn:active { transform:scale(0.96); }
-
-/* ══ ADD TO HOME SCREEN HINT (iOS only) ══ */
-#iosHint {
-  display:none;
-  position:fixed;
-  bottom:20px; left:50%;
-  transform:translateX(-50%);
-  z-index:200;
-  background:rgba(0,0,0,0.85);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:14px;
-  padding:14px 20px;
-  text-align:center;
-  max-width:280px;
-  animation:fadeUp .4s ease;
-}
-@keyframes fadeUp { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-.ios-hint-txt { font-family:'Raleway',sans-serif; font-size:12px; font-weight:600; color:rgba(255,255,255,0.8); line-height:1.6; }
-.ios-hint-txt strong { color:var(--o); }
-.ios-hint-close { margin-top:10px; background:none; border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:6px 16px; color:rgba(255,255,255,0.6); font-family:'Raleway',sans-serif; font-size:11px; font-weight:700; cursor:pointer; letter-spacing:1px; }
 </style>
 </head>
 <body>
 
 <!-- ROTATE PROMPT -->
 <div id="rotateMsg">
-  <div class="rotate-icon">📱</div>
-  <div class="rotate-txt">PLEASE ROTATE YOUR PHONE</div>
-  <div class="rotate-sub">Turn your phone to landscape mode for the best training experience.</div>
+  <div class="ri">📱</div>
+  <div class="rt">Please Rotate Your Phone</div>
+  <div class="rs">Turn your phone to landscape mode for the best training experience.</div>
 </div>
 
-<!-- VIDEO -->
+<!-- VIDEO — playsinline is critical, NO autoplay attribute -->
 <video id="vid"
   src="https://raw.githubusercontent.com/Rimshaali97/valuecabs-training/main/training.mp4"
   playsinline
   webkit-playsinline
+  x-webkit-airplay="deny"
   preload="auto"
+  disablePictureInPicture
+  controlslist="nodownload nofullscreen noremoteplayback"
 ></video>
 
 <!-- BLOCKER -->
@@ -251,9 +273,7 @@ button.cb:active { transform:scale(0.96); }
   <div class="open-wrap">
     <div class="open-title">SAFEGUARDING<br>TRAINING</div>
     <div class="open-sub">Mandatory training for all Value Cabs drivers.</div>
-    <div class="play-circle" id="playBtn">
-      <div class="play-tri"></div>
-    </div>
+    <div class="play-circle" id="playBtn"><div class="play-tri"></div></div>
     <div class="tap-hint">Tap to begin</div>
   </div>
 </div>
@@ -299,12 +319,6 @@ button.cb:active { transform:scale(0.96); }
   </div>
 </div>
 
-<!-- iOS add-to-home hint -->
-<div id="iosHint">
-  <div class="ios-hint-txt">For the best fullscreen experience,<br>tap <strong>Share → Add to Home Screen</strong><br>then open from your home screen.</div>
-  <button class="ios-hint-close" onclick="document.getElementById('iosHint').style.display='none'">GOT IT</button>
-</div>
-
 <script>
 var ZAPIER = 'https://hooks.zapier.com/hooks/catch/24117118/46xiv5r/';
 var QUIZ   = '#';
@@ -317,45 +331,25 @@ var dNum='', dName='', dReg='';
 var cp1done=false, cp2done=false, cp3done=false, finished=false;
 var vid = document.getElementById('vid');
 
-/* ══ Detect iOS ══ */
-var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-var isAndroid = /Android/.test(navigator.userAgent);
-
-/* ══ Show iOS hint after 2s on opening screen ══ */
-if(isIOS && !navigator.standalone){
-  setTimeout(function(){
-    document.getElementById('iosHint').style.display = 'block';
-  }, 2000);
-}
-
-/* ══ Fullscreen helper ══ */
-function requestFullscreen(el){
-  if(el.requestFullscreen)            { el.requestFullscreen(); }
-  else if(el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); }
-  else if(el.mozRequestFullScreen)    { el.mozRequestFullScreen(); }
-  else if(el.msRequestFullscreen)     { el.msRequestFullscreen(); }
-  // iOS Safari: request fullscreen on the video element itself
-  else if(vid.webkitEnterFullscreen)  { vid.webkitEnterFullscreen(); }
-}
-
-/* ══ Opening play ══ */
+/* ══ Play button ══ */
 document.getElementById('playBtn').addEventListener('click', begin);
 document.getElementById('openScreen').addEventListener('click', begin);
 
 function begin(){
-  // Hide iOS hint if showing
-  document.getElementById('iosHint').style.display = 'none';
+  document.getElementById('openScreen').classList.add('gone');
 
-  // Request fullscreen on the whole page
-  requestFullscreen(document.documentElement);
+  /* Android: request fullscreen on the page wrapper */
+  var el = document.documentElement;
+  if(el.requestFullscreen)            el.requestFullscreen().catch(function(){});
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if(el.mozRequestFullScreen)    el.mozRequestFullScreen();
 
-  // Also request landscape
+  /* Lock landscape on Android */
   if(screen.orientation && screen.orientation.lock){
     screen.orientation.lock('landscape').catch(function(){});
   }
 
-  document.getElementById('openScreen').classList.add('gone');
-
+  /* Play video — unmuted, with muted fallback */
   vid.muted = false;
   var p = vid.play();
   if(p !== undefined){
@@ -369,9 +363,9 @@ function begin(){
 /* ══ Time watcher ══ */
 vid.addEventListener('timeupdate', function(){
   var t = vid.currentTime;
-  if(t >= CP1 && !cp1done){ cp1done=true; vid.pause(); show('ov1'); focusLater('in1'); }
-  if(t >= CP2 && !cp2done && cp1done){ cp2done=true; vid.pause(); show('ov2'); focusLater('in2'); }
-  if(t >= CP3 && !cp3done && cp2done){ cp3done=true; vid.pause(); show('ov3'); focusLater('in3'); }
+  if(t >= CP1 && !cp1done){ cp1done=true; vid.pause(); show('ov1'); later('in1'); }
+  if(t >= CP2 && !cp2done && cp1done){ cp2done=true; vid.pause(); show('ov2'); later('in2'); }
+  if(t >= CP3 && !cp3done && cp2done){ cp3done=true; vid.pause(); show('ov3'); later('in3'); }
 });
 
 vid.addEventListener('ended', function(){
@@ -426,17 +420,20 @@ function complete(){
 
 function goQuiz(){
   if(QUIZ&&QUIZ!=='#'){ window.location.href=QUIZ; }
-  else{ alert('The quiz link will be available soon. Please contact your manager if you need assistance.'); }
+  else{ alert('The quiz link will be available soon. Please contact your manager.'); }
 }
 
 function show(id){ document.getElementById(id).classList.remove('gone'); }
 function hide(id){ document.getElementById(id).classList.add('gone'); }
-function focusLater(id){ setTimeout(function(){ var el=document.getElementById(id); if(el) el.focus(); },400); }
+function later(id){ setTimeout(function(){ var el=document.getElementById(id); if(el) el.focus(); },400); }
 
-/* Blocker */
+/* Blocker — no pause, no seek */
 var bl=document.getElementById('blocker');
-bl.addEventListener('click',    function(e){ e.preventDefault(); e.stopPropagation(); },true);
-bl.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); },true);
+function block(e){ e.preventDefault(); e.stopPropagation(); }
+bl.addEventListener('click',     block, true);
+bl.addEventListener('touchstart',block, {passive:false});
+bl.addEventListener('touchend',  block, {passive:false});
+bl.addEventListener('touchmove', block, {passive:false});
 
 /* Block back button */
 window.history.pushState(null,'',window.location.href);
